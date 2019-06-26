@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -20,37 +21,42 @@ import java.util.List;
  */
 public class MainActivity extends FragmentActivity {
 
+    TextView mTvWrite;
+
+    TextView mTvCamera;
+
+    TextView mTvPhone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        new IPermission(this)
-//                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                .excute(new PermissionResultCallBack() {
-//                    @Override
-//                    public void onPermissionResult(List<PermissionResult> results) {
-//                        for (PermissionResult permissionResult : results) {
-//                            if (permissionResult.getPermission().equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                                Toast.makeText(getApplicationContext(), (permissionResult.isSuccess() ? "success" : "fail") + " by reuqest" + permissionResult.getPermission(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//                    }
-//                });
+        mTvWrite = findViewById(R.id.tv_write);
+        mTvCamera = findViewById(R.id.tv_camera);
+        mTvPhone = findViewById(R.id.tv_phone);
 
         new IPermission(this)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .request(Manifest.permission.CAMERA)
                 .request(Manifest.permission.CALL_PHONE)
-                .excute(new EnsureAllPermissionCallBack() {
+                .excute(new PermissionResultCallBack() {
                     @Override
-                    public void onAllPermissionEnable(boolean isEnable) {
-                        if (isEnable) {
-                            Toast.makeText(getApplicationContext(), "thank you", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "we need all permission", Toast.LENGTH_LONG).show();
+                    public void onPermissionResult(List<PermissionResult> results) {
+                        for (PermissionResult permissionResult : results) {
+                            if (permissionResult.getPermission().equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                mTvWrite.setText((permissionResult.isSuccess() ? "完成!" : "失败!") + "读写权限获取");
+                            } else if (permissionResult.getPermission().equals(Manifest.permission.CAMERA)) {
+                                mTvCamera.setText((permissionResult.isSuccess() ? "完成!" : "失败!") + "相机权限获取");
+                            } else if (permissionResult.getPermission().equals(Manifest.permission.CALL_PHONE)) {
+                                mTvPhone.setText((permissionResult.isSuccess() ? "完成!" : "失败!") + "电话权限获取");
+                            }
                         }
                     }
                 });
+    }
+
+    public void show(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 }

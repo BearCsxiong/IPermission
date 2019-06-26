@@ -1,12 +1,10 @@
 package me.csxiong.ipermission;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 /**
  * -------------------------------------------------------------------------------
@@ -22,8 +20,6 @@ public class IPermission {
     private final String PERMISSION_TAG = "delegate_permission_tag";
 
     public WeakReference<IPermissionDelegateFragment> mPermissionDelegate;
-
-    private ArrayList<String> permissions = new ArrayList<>();
 
     public IPermission(FragmentActivity activity) {
         Preconditions.checkNotNull(activity);
@@ -68,11 +64,25 @@ public class IPermission {
 
     /**
      * excute permission
+     * means receive result one times
      *
      * @param permissionResultCallBack
      */
     public void excute(PermissionResultCallBack permissionResultCallBack) {
+        mPermissionDelegate.get().setNeedRequestOneByOne(false);
         Preconditions.checkNotNull(permissionResultCallBack);
+        mPermissionDelegate.get().setPermissionResultCallBack(permissionResultCallBack);
+        mPermissionDelegate.get().requestPermission();
+    }
+
+    /**
+     * excute permission request one by one
+     * means receive result one by one
+     *
+     * @param permissionResultCallBack
+     */
+    public void excuteOneByOne(PermissionResultCallBack permissionResultCallBack) {
+        mPermissionDelegate.get().setNeedRequestOneByOne(true);
         mPermissionDelegate.get().setPermissionResultCallBack(permissionResultCallBack);
         mPermissionDelegate.get().requestPermission();
     }
