@@ -1,6 +1,10 @@
 package me.csxiong.ipermission;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModelStore;
+import android.arch.lifecycle.ViewModelStoreOwner;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
