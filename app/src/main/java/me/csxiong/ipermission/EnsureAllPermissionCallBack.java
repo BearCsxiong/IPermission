@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * easy change the strategy to hold result
+ * ensure all enable
  */
 public abstract class EnsureAllPermissionCallBack implements PermissionResultCallBack {
 

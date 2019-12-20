@@ -19,7 +19,7 @@ public class IPermission {
 
     private final String PERMISSION_TAG = "delegate_permission_tag";
 
-    public WeakReference<IPermissionDelegateFragment> mPermissionDelegate;
+    private WeakReference<IPermissionDelegateFragment> mPermissionDelegate;
 
     public IPermission(FragmentActivity activity) {
         Preconditions.checkNotNull(activity);
@@ -64,13 +64,13 @@ public class IPermission {
 
     /**
      * excute permission
-     * means receive result one times
+     * means receive result one time
      *
      * @param permissionResultCallBack
      */
     public void excute(PermissionResultCallBack permissionResultCallBack) {
-        mPermissionDelegate.get().setNeedRequestOneByOne(false);
         Preconditions.checkNotNull(permissionResultCallBack);
+        mPermissionDelegate.get().setNeedRequestOneByOne(false);
         mPermissionDelegate.get().setPermissionResultCallBack(permissionResultCallBack);
         mPermissionDelegate.get().requestPermission();
     }
@@ -81,7 +81,8 @@ public class IPermission {
      *
      * @param permissionResultCallBack
      */
-    public void excuteOneByOne(PermissionResultCallBack permissionResultCallBack) {
+    public void excuteEach(PermissionResultCallBack permissionResultCallBack) {
+        Preconditions.checkNotNull(permissionResultCallBack);
         mPermissionDelegate.get().setNeedRequestOneByOne(true);
         mPermissionDelegate.get().setPermissionResultCallBack(permissionResultCallBack);
         mPermissionDelegate.get().requestPermission();
