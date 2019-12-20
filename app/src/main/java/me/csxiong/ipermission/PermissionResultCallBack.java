@@ -5,13 +5,8 @@ import android.support.annotation.UiThread;
 import java.util.List;
 
 /**
- * -------------------------------------------------------------------------------
- * |
- * | desc : permission result call back
- * |
- * |--------------------------------------------------------------------------------
- * | on 2019/6/26 created by csxiong
- * |--------------------------------------------------------------------------------
+ * @Desc : permission result call back
+ * @Author : csxiong - 2019-12-20
  */
 public interface PermissionResultCallBack {
 
@@ -24,6 +19,7 @@ public interface PermissionResultCallBack {
 
     /**
      * call back for pre request permission
+     *
      * @param requestList the list of permissions
      */
     @UiThread

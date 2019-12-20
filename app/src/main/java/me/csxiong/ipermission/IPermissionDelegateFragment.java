@@ -14,14 +14,29 @@ import java.util.ArrayList;
  */
 public class IPermissionDelegateFragment extends Fragment {
 
+    /**
+     * request code for permission
+     */
     private static final int PERMISSION_REQUEST_CODE = 200;
 
+    /**
+     * arrays of permission
+     */
     private ArrayList<String> requestPermissions = new ArrayList<>();
 
+    /**
+     * arrays of permission successful
+     */
     private ArrayList<String> successPermissions = new ArrayList<>();
 
+    /**
+     * result callback
+     */
     private PermissionResultCallBack permissionResultCallBack;
 
+    /**
+     * the strategy of request steps
+     */
     private boolean isNeedRequestOneByOne = false;
 
     public void setPermissionResultCallBack(PermissionResultCallBack permissionResultCallBack) {
@@ -64,6 +79,9 @@ public class IPermissionDelegateFragment extends Fragment {
         successPermissions.add(permission);
     }
 
+    /**
+     *  request
+     */
     protected void requestPermission() {
         if (requestPermissions.isEmpty()) {
             if (!successPermissions.isEmpty()) {
