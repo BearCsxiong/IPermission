@@ -3,8 +3,8 @@ package me.csxiong.ipermission;
 import java.util.List;
 
 /**
- * easy change the strategy to hold result
- * ensure all enable
+ * @Desc : multi permission call back
+ * @Author : csxiong - 2019-12-20
  */
 public abstract class EnsureAllPermissionCallBack implements PermissionResultCallBack {
 

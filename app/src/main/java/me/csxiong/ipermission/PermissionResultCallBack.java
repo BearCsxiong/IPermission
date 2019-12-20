@@ -1,5 +1,7 @@
 package me.csxiong.ipermission;
 
+import android.support.annotation.UiThread;
+
 import java.util.List;
 
 /**
@@ -19,4 +21,11 @@ public interface PermissionResultCallBack {
      * @param results
      */
     void onPermissionResult(List<PermissionResult> results);
+
+    /**
+     * call back for pre request permission
+     * @param requestList the list of permissions
+     */
+    @UiThread
+    void onPreRequest(List<String> requestList);
 }

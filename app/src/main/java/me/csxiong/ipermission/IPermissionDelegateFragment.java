@@ -1,25 +1,16 @@
 package me.csxiong.ipermission;
 
-import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
- * -------------------------------------------------------------------------------
- * |
- * | desc : a delegate for permission request and packing after received
- * |
- * |--------------------------------------------------------------------------------
- * | on 2019/6/26 created by csxiong
- * |--------------------------------------------------------------------------------
+ * @Desc : like an ViewModel usage
+ * @Author : csxiong - 2019-12-20
  */
 public class IPermissionDelegateFragment extends Fragment {
 
@@ -52,34 +43,42 @@ public class IPermissionDelegateFragment extends Fragment {
      */
     protected void preparePermission(String permission) {
         Preconditions.checkNotNull(permission);
-        //exclude samle permission
+        // exclude samle permission
         if (successPermissions.contains(permission) || requestPermissions.contains(permission)) {
-            //all permission array exist same to request permission array
+            // all permission array exist same to request permission array
             return;
         }
-        //select the permission denied
+        // select the permission denied
         if (!isGanted(permission)) {
             requestPermissions.add(permission);
             return;
         }
 
-        //select the permission revoked
-        if (!isRevokedByPolicy(permission)) {
-            requestPermissions.add(permission);
-            return;
-        }
+        // select the permission revoked
+        // if (!isRevokedByPolicy(permission)) {
+        // requestPermissions.add(permission);
+        // return;
+        // }
 
-        //success permission
+        // success permission
         successPermissions.add(permission);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     protected void requestPermission() {
         if (requestPermissions.isEmpty()) {
+            if (!successPermissions.isEmpty()) {
+                ArrayList<PermissionResult> results = new ArrayList<>();
+                for (String permission : successPermissions) {
+                    results.add(new PermissionResult(permission, true));
+                }
+                permissionResultCallBack.onPermissionResult(results);
+            }
             return;
         }
+        // update by csxiong , design for update UI -> enable show permission description
+        permissionResultCallBack.onPreRequest(requestPermissions);
         if (isNeedRequestOneByOne) {
-            //bugfix: oneByOne mode we need send granted permission result before we request another
+            // bugfix: oneByOne mode we need send granted permission result before we request another
             excuteSuccessPermission();
             requestPermission(requestPermissions.remove(0));
         } else {
@@ -94,37 +93,34 @@ public class IPermissionDelegateFragment extends Fragment {
         requestPermissions(permissions, PERMISSION_REQUEST_CODE);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private boolean isGanted(String permission) {
         FragmentActivity activity = getActivity();
         Preconditions.checkNotNull(activity);
-        return activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private boolean isRevokedByPolicy(String permission) {
-        FragmentActivity activity = getActivity();
-        Preconditions.checkNotNull(activity);
-        return activity.getPackageManager().isPermissionRevokedByPolicy(permission, activity.getPackageName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //receive permission result after policy selected
-        //to be safe
+        // receive permission result after policy selected
+        // to be safe
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (permissionResultCallBack != null) {
                 ArrayList<PermissionResult> permissionResults = new ArrayList<>();
 
-                //1.remove deal permission and remove it on all permissions
+                // 1.remove deal permission and remove it on all permissions
                 for (int i = 0; i < permissions.length; i++) {
                     String requestedPermission = permissions[i];
                     int grantedCode = grantResults[i];
-                    permissionResults.add(new PermissionResult(requestedPermission, grantedCode == PackageManager.PERMISSION_GRANTED));
+                    permissionResults.add(
+                            new PermissionResult(requestedPermission, grantedCode == PackageManager.PERMISSION_GRANTED));
                 }
 
-                //2.diff strategy diff next
+                // 2.diff strategy diff next
                 if (isNeedRequestOneByOne) {
                     permissionResultCallBack.onPermissionResult(permissionResults);
                     if (hasNext()) {
@@ -132,7 +128,7 @@ public class IPermissionDelegateFragment extends Fragment {
                         return;
                     }
                 } else {
-                    //3.rest permissions is successful at first
+                    // 3.rest permissions is successful at first
                     for (String successPermission : successPermissions) {
                         permissionResults.add(new PermissionResult(successPermission, true));
                     }
@@ -171,7 +167,7 @@ public class IPermissionDelegateFragment extends Fragment {
     }
 
     public void clear() {
-        //to be safe,clear the call back,using once;
+        // to be safe,clear the call back,using once;
         permissionResultCallBack = null;
         successPermissions.clear();
         requestPermissions.clear();

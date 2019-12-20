@@ -1,18 +1,19 @@
 package me.csxiong.ipermission;
 
 /**
- * -------------------------------------------------------------------------------
- * |
- * | desc : hold permission result
- * |
- * |--------------------------------------------------------------------------------
- * | on 2019/6/26 created by csxiong
- * |--------------------------------------------------------------------------------
+ * @Desc : the decription of permission result
+ * @Author : csxiong - 2019-12-20
  */
 public class PermissionResult {
 
+    /**
+     * target
+     */
     private String permission;
 
+    /**
+     * success or fail
+     */
     private boolean isSuccess;
 
     public PermissionResult(String permission, boolean isSuccess) {
